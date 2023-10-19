@@ -1,0 +1,33 @@
+*&---------------------------------------------------------------------*
+*& Report ZYASHU_FIRSTREPORT
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZYASHU_FIRSTREPORT.
+
+TYPES : BEGIN OF ty_ZYASHUU_MAKT,
+
+         E_ID TYPE ZYASHUU_MAKT-E_ID,
+         E_NAME TYPE ZYASHUU_MAKT-E_NAME,
+         E_SALARY TYPE ZYASHUU_MAKT-E_SALARY,
+         E_DCODE TYPE ZYASHUU_MAKT-E_DCODE,
+
+        END OF ty_ZYASHUU_MAKT.
+
+DATA : st_ZYASHUU_MAKT TYPE ty_ZYASHUU_MAKT.
+DATA : st_ZTABLE_MAKT TYPE ty_ZYASHUU_MAKT.
+
+PARAMETERS P_E_ID TYPE ZYASHUU_MAKT-E_ID.
+
+SELECT  E_ID E_NAME E_SALARY E_DCODE FROM ZYASHUU_MAKT INTO st_ZYASHUU_MAKT WHERE E_ID EQ P_E_ID.
+
+
+  WRITE :
+          st_ZYASHUU_MAKT-E_ID,
+          st_ZYASHUU_MAKT-E_NAME,
+          st_ZYASHUU_MAKT-E_SALARY,
+          st_ZYASHUU_MAKT-E_DCODE.
+ ENDSELECT.
+
+
+*TYPES : BEGIN OF ty_ZTABLE_MAKT,

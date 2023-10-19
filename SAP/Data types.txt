@@ -1,0 +1,33 @@
+*&---------------------------------------------------------------------*
+*& Report ZYASHU_FIRSTPROGRAM
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZYASHU_FIRSTPROGRAM.
+data my_name type c length 10.
+my_name = 'yashu'.
+write my_name.
+
+data v type c length 20.
+v = 'Bangalore'.
+write :/ v.
+
+data q type D.
+q = '20000423'.
+write :/ q.
+
+data number type n length 20.
+number = '6265365657'.
+write :/ number.
+
+data packed type p length 16 decimals 6.
+packed = '5366.5535635'.
+write :/ packed.
+
+data int type i.
+int = '3'.
+write :/ int.
+
+data time type t.
+time = '122334'.
+write :/ time.

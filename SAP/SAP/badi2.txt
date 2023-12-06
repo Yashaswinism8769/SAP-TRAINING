@@ -1,0 +1,27 @@
+*&---------------------------------------------------------------------*
+*& Report ZRO_BADI3
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZRO_BADI3.
+
+DATA o_badi TYPE REF TO ZY_BADI_DEF.
+
+DATA other TYPE i.
+
+PARAMETERS : p_ctry TYPE c LENGTH 5,
+v_amount TYPE i.
+
+other = ( v_amount * 90 ) / 100.
+
+IF  p_ctry EQ 'IN' or p_ctry EQ 'US'.
+  GET BADI o_badi
+  FILTERS
+  country = p_ctry.
+  CALL BADI o_badi->calculate_gst
+  EXPORTING
+    v_amount = v_amount.
+ELSE.
+ WRITE : 'others', other.
+
+ENDIF.

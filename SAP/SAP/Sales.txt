@@ -1,0 +1,54 @@
+*&---------------------------------------------------------------------*
+*& Report ZYASHU_SALES
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZYASHU_SALES.
+
+TYPES : BEGIN OF ty_vbak,
+        vbeln TYPE vbak-vbeln,
+        audat TYPE vbak-audat,
+        netwr TYPE vbak-netwr,
+        kunnr TYPE vbak-kunnr,
+        END OF ty_vbak.
+
+
+
+TYPES : BEGIN OF ty_vbap,
+        posnr TYPE vbap-posnr,
+        matnr TYPE vbap-matnr,
+        arktx TYPE vbap-arktx,
+        kwmeng TYPE vbap-kwmeng,
+        zieme TYPE vbap-zieme,
+        netwr TYPE vbap-netwr,
+        END OF ty_vbap.
+
+DATA : st_vbak TYPE ty_vbak,
+       st_vbap TYPE ty_vbap.
+DATA v_name1 TYPE kna1-name1.
+DATA v_msehl TYPE t006a-msehl.
+
+PARAMETERS p_vbeln TYPE vbak-vbeln.
+
+SELECT SINGLE vbeln audat netwr kunnr FROM vbak INTO st_vbak WHERE vbeln EQ p_vbeln.
+   SELECT SINGLE name1 FROM kna1 INTO v_name1 WHERE kunnr EQ st_vbak-kunnr.
+
+
+  WRITE : / 'Document number', st_vbak-vbeln,
+          / 'Document date',  st_vbak-audat,
+          / 'Net value',       st_vbak-netwr,
+          / 'sold-to party',   st_vbak-kunnr.
+
+
+SELECT posnr matnr arktx kwmeng zieme netwr FROM vbap INTO st_vbap WHERE  vbeln EQ p_vbeln.
+  SELECT SINGLE msehI FROM t006a INTO v_msehi WHERE msehl EQ v_msehl.
+
+
+
+  WRITE : st_vbap-posnr,
+          st_vbap-matnr,
+          st_vbap-arktx,
+          st_vbap-kwmeng,
+          st_vbap-zieme,
+          st_vbap-netwr.
+  ENDSELECT.

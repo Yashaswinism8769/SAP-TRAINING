@@ -1,0 +1,24 @@
+*&---------------------------------------------------------------------*
+*& Report ZYASHU_SECONDPROGRAM
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZYASHU_SECONDPROGRAM.
+
+
+DATA : t_data TYPE c length 20,
+
+        v_data TYPE c length 30.
+t_data = 'mysore'.
+v_data = 'bangalore'.
+WRITE t_data to v_data.
+WRITE v_data.
+
+
+TYPES a_type TYPE i .
+
+DATA: b_data TYPE i,
+      c_data TYPE i.
+      b_data = 234.
+      c_data = 123.
+      WRITE c_data.

@@ -1,0 +1,39 @@
+*&---------------------------------------------------------------------*
+*& Report ZYA_FM1
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZYA_FM1.
+
+TYPES : BEGIN OF ty_makt,
+        matnr TYPE makt-matnr,
+        spras TYPE makt-spras,
+        maktx TYPE makt-maktx,
+        END OF ty_makt.
+
+DATA : it_makt TYPE TABLE OF ty_makt,
+       wa_makt LIKE LINE OF it_makt.
+
+SELECT-OPTIONS s_num FOR wa_makt-matnr.
+
+CALL FUNCTION 'ZYA_FUN1'
+  EXPORTING
+    im_matnr       = s_num[]
+ IMPORTING
+   EX_MAKT        =  it_makt.
+
+
+LOOP AT it_makt INTO wa_makt.
+  AT FIRST.
+
+ WRITE : /'Material number',
+         20 'Language',
+         40 'Description'.
+
+ENDAT.
+
+ WRITE :/ wa_makt-matnr,
+       20 wa_makt-spras,
+       40  wa_makt-maktx.
+
+ENDLOOP.

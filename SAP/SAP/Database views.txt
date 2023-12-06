@@ -1,0 +1,20 @@
+*&---------------------------------------------------------------------*
+*& Report ZYASHU_DB_VIEW
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZYASHU_DB_VIEW.
+
+
+DATA : it_plant TYPE STANDARD TABLE OF ZYASHU_DB,
+       wa_plant LIKE LINE OF it_plant.
+
+SELECT-OPTIONS s_matnr FOR wa_plant-matnr.
+
+SELECT *  FROM ZYASHU_DB INTO TABLE it_plant WHERE matnr in s_matnr.
+
+  LOOP AT it_plant INTO wa_plant.
+
+    WRITE : / wa_plant-matnr, 30 wa_plant-werks, 150 wa_plant-name1.
+
+  ENDLOOP.

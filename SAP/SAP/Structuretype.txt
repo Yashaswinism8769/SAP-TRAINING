@@ -1,0 +1,22 @@
+*&---------------------------------------------------------------------*
+*& Report ZYASHU_STRUCTURETYPE
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZYASHU_STRUCTURETYPE.
+
+DATA : v_matnr TYPE makt-matnr.
+
+TYPES : Begin of ty_makt,
+        matnr TYPE makt-matnr,
+        spras TYPE makt-matnr,
+        maktx TYPE makt-maktx,
+        END OF ty_makt.
+
+DATA : st_makt TYPE ty_makt.
+
+        v_matnr = '32'.
+        write v_matnr.
+
+        v_matnr = '54'.
+        WRITE v_matnr.

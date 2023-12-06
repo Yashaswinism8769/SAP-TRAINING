@@ -1,0 +1,84 @@
+*&---------------------------------------------------------------------*
+*& Report ZYA_SUB_BASIC2_TWIN
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZYA_SUB_BASIC2_TWIN.
+
+DATA : it_vbak TYPE zya_t_vbak,
+       wa_vbak LIKE LINE OF it_vbak,
+       it_vbap TYPE zya_t_vbap,
+       wa_vbap LIKE LINE OF it_vbap.
+
+PARAMETERS : p_vbeln TYPE vbak-vbeln.
+
+PERFORM display_vbak USING p_vbeln CHANGING it_vbak.
+PERFORM display_vbap USING p_vbeln CHANGING it_vbap.
+PERFORM display.
+*&---------------------------------------------------------------------*
+*& Form display_vbak
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*&      --> P_VBELN
+*&      <-- IT_VBAK
+*&---------------------------------------------------------------------*
+FORM display_vbak  USING    p_p_vbeln TYPE vbak-vbeln
+                   CHANGING p_it_vbak TYPE zya_t_vbak.
+
+SELECT vbeln audat netwr kunnr FROM vbak INTO TABLE it_vbak WHERE vbeln EQ p_vbeln.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form display_vbap
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*&      --> P_VBELN
+*&      <-- IT_VBAP
+*&---------------------------------------------------------------------*
+FORM display_vbap  USING    p_p_vbeln TYPE vbak-vbeln
+                   CHANGING p_it_vbap TYPE zya_t_vbap.
+
+SELECT vbeln posnr pstyv arktx kwmeng zieme netwr FROM vbap INTO TABLE it_vbap WHERE vbeln EQ p_vbeln.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form display
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*& -->  p1        text
+*& <--  p2        text
+*&---------------------------------------------------------------------*
+FORM display .
+
+LOOP AT it_vbap INTO wa_vbap.
+  READ TABLE it_vbak INTO wa_vbak WITH KEY vbeln = wa_vbap-vbeln.
+
+ AT NEW vbeln.
+ WRITE : / 'Document_number:', wa_vbak-vbeln,
+         / 'Date:', wa_vbak-audat,
+         / 'Net value:', wa_vbak-netwr,
+         / 'Sold-to-party:', wa_vbak-kunnr.
+
+
+
+  WRITE : / 'Item',
+         20 'Material',
+         30 'Description',
+         40 'Quantity',
+         50 'UOM',
+         60 'Net value'.
+
+ENDAT.
+  WRITE : / wa_vbap-posnr,
+         20 wa_vbap-pstyv,
+         40 wa_vbap-arktx,
+         60 wa_vbap-kwmeng,
+         80 wa_vbap-zieme,
+         100 wa_vbap-netwr.
+
+  ENDLOOP.
+
+ENDFORM.

@@ -1,0 +1,83 @@
+*&---------------------------------------------------------------------*
+*& Report ZYA_OOP3
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZYA_OOP3.
+
+DATA : it_vbak TYPE zya_t_vbak,
+       wa_vbak LIKE LINE OF it_vbak,
+       it_vbap TYPE zya_t_vbap,
+       wa_vbap LIKE LINE OF it_vbap,
+       it_kna1 TYPE zya_t_kna1,
+       wa_kna1 LIKE LINE OF it_kna1,
+       it_t006a TYPE zya_t_t006a,
+       wa_t006a LIKE LINE OF it_t006a,
+       it_header TYPE zya_t_header,
+       wa_header LIKE LINE OF it_header,
+       it_item TYPE zya_t_item,
+       wa_item LIKE LINE OF it_item.
+
+SELECT-OPTIONS s_vbeln FOR wa_vbak-vbeln.
+
+CLASS lcl_event DEFINITION.
+  PUBLIC SECTION.
+ METHODS raise_double_click FOR EVENT double_click OF cl_salv_events_table IMPORTING row column.
+ ENDCLASS.
+
+ CLASS lcl_event IMPLEMENTATION.
+   METHOD raise_double_click.
+
+     CLEAR it_item.
+     SELECT  vbeln posnr pstyv arktx kwmeng zieme netwr FROM vbap INTO TABLE it_vbap WHERE vbeln EQ wa_header-vbeln.
+       SELECT msehi msehl FROM t006a INTO TABLE it_t006a FOR ALL ENTRIES IN it_vbap WHERE msehi EQ it_vbap-zieme.
+         LOOP AT it_vbap INTO wa_vbap.
+           READ TABLE it_t006a INTO wa_t006a WITH KEY msehi = wa_vbap-zieme.
+           MOVE-CORRESPONDING wa_vbap TO wa_item.
+           MOVE-CORRESPONDING wa_t006a TO wa_item.
+           APPEND wa_item TO it_item.
+
+           CLEAR wa_item.
+
+          ENDLOOP.
+           cl_salv_table=>factory(
+
+            IMPORTING
+        r_salv_table              = DATA(o_alv)
+      CHANGING
+        t_table                   = it_item
+    ).
+           o_alv->display( ).
+
+           ENDMETHOD.
+           ENDCLASS.
+
+   DATA o_event TYPE REF TO lcl_event.
+
+   START-OF-SELECTION .
+   CREATE OBJECT o_event.
+
+   SELECT vbeln audat netwr kunnr FROM vbak INTO TABLE it_vbak WHERE vbeln IN s_vbeln.
+ SELECT kunnr name1 FROM kna1 INTO TABLE it_kna1 FOR ALL ENTRIES IN it_vbak WHERE kunnr EQ it_vbak-vbeln.
+   LOOP AT it_vbak INTO wa_vbak.
+     READ TABLE it_kna1 INTO wa_kna1 WITH KEY kunnr = wa_vbak-kunnr.
+
+ MOVE-CORRESPONDING wa_vbak TO wa_header.
+ MOVE-CORRESPONDING wa_kna1 TO wa_header.
+
+ APPEND wa_header TO it_header.
+
+ ENDLOOP.
+
+ cl_salv_table=>factory(
+
+ IMPORTING
+        r_salv_table              = DATA(o_alv1)
+      CHANGING
+        t_table                   = it_header
+    ).
+
+ DATA(o_event_class) = o_alv1->get_event( ).
+ SET HANDLER o_event->raise_double_click FOR o_event_class.
+
+ o_alv1->display( ).

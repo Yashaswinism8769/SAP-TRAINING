@@ -1,0 +1,82 @@
+*&---------------------------------------------------------------------*
+*& Report ZY_SUB
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZY_SUB.
+
+*DATA : it_vbak TYPE zyt_vbak,
+*       wa_vbak LIKE LINE OF it_vbak,
+*it_kna1 TYPE zyt_kna1,
+*       wa_kna1 LIKE LINE OF it_kna1,
+DATA:  it_vbap TYPE zyt_vbap,
+       wa_vbap LIKE LINE OF it_vbap,
+
+       it_t006a TYPE zyt_t006a,
+       wa_t006a LIKE LINE OF it_t006a.
+
+DATA:  it_header TYPE zyt_header,
+       wa_header LIKE LINE OF it_header,
+       it_item TYPE  zyt_item,
+       wa_item LIKE LINE OF it_item.
+
+data:  prevbeln TYPE vbap-vbeln.
+
+SELECT-OPTIONS s_num FOR wa_header-vbeln.
+
+START-OF-SELECTION.
+
+PERFORM display IN PROGRAM zy_sub_form USING s_num[] CHANGING it_header.
+PERFORM display_header.
+
+ END-OF-SELECTION.
+
+ AT LINE-SELECTION.
+   DATA : fnam(20),fval(50).
+   DATA v_vbeln TYPE vbap-vbeln.
+   GET CURSOR FIELD fnam VALUE fval.
+   PERFORM conversion.
+   clear it_item.
+
+   PERFORM itemdetails IN PROGRAM zy_sub_form USING v_vbeln CHANGING it_item.
+   PERFORM display_item.
+
+   FORM display_header.
+     LOOP AT it_header INTO wa_header.
+       WRITE : / wa_header-vbeln,
+                 wa_header-audat,
+                 wa_header-netwr,
+                 wa_header-name1.
+     ENDLOOP.
+   ENDFORM.
+
+
+FORM conversion .
+  CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+    EXPORTING
+      input  = fval
+    IMPORTING
+      output = v_vbeln.
+
+ENDFORM.
+
+   FORM display_item.
+     LOOP AT it_item INTO wa_item.
+
+       AT FIRST.
+         WRITE : / 'Item',
+                 20 'Material',
+                 35 'Itemdesc',
+                 60 'Order qty',
+                 80 'UoM',
+                 100 'Netval'.
+       ENDAT .
+       WRITE : / wa_item-posnr,
+             20 wa_item-pstyv,
+             35  wa_item-arktx,
+             50 wa_item-kwmeng,
+             80 wa_item-msehi,
+             90 wa_item-netwr.
+
+     ENDLOOP.
+   ENDFORM.

@@ -1,0 +1,35 @@
+*&---------------------------------------------------------------------*
+*& Report ZYA_FM2
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZYA_FM2.
+
+DATA : it_vbak TYPE zya_t_vbak,
+       wa_vbak LIKE LINE OF it_vbak.
+
+SELECT-OPTIONS s_vbeln FOR wa_vbak-vbeln.
+
+CALL FUNCTION 'ZYA_FUN2'
+  EXPORTING
+    im_vbeln       = s_vbeln[]
+ IMPORTING
+   EX_VBAK        = it_vbak
+          .
+
+LOOP AT it_vbak INTO wa_vbak.
+
+AT FIRST.
+WRITE : / 'Document number',
+       20 'Date',
+       40 'Net value',
+       60 'Sold-to-party'.
+
+ENDAT.
+
+WRITE : / wa_vbak-vbeln,
+       20 wa_vbak-audat,
+       30 wa_vbak-netwr,
+       60 wa_vbak-kunnr.
+
+ENDLOOP.
